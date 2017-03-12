@@ -1,0 +1,18 @@
+server:
+  port: ${PORT:9999}
+
+eureka:
+  instance:
+    hostname: localhost
+    nonSecurePort: ${server.port:8777}
+    secureVirtualHostName: ${spring.application.name}
+    nonSecurePortEnabled: true
+    securePortEnabled: false
+    appname: ${spring.application.name}
+    virtual-host-name: ${spring.application.name}
+
+  client:
+    #region: default
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

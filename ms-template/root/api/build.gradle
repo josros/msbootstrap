@@ -1,0 +1,26 @@
+jar {
+    baseName = "$rootProject.name-api"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile('org.springframework.cloud:spring-cloud-starter-feign')
+}
+
+/*
+ * Copy jar into parent build folder
+ */
+
+def buildLibsFolder = new File("${project.projectDir}/build/libs/")
+def parentBuildFolder = "../../build"
+
+task cpjar << {
+    copy {
+        from(buildLibsFolder) {
+            include '**/*.jar'
+        }
+        into parentBuildFolder
+    }
+}
+
+bootRepackage.finalizedBy cpjar

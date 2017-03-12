@@ -1,0 +1,86 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5"
+    }
+}
+
+plugins {
+    id "net.ltgt.apt" version "0.9"
+}
+
+apply plugin: 'idea'
+apply plugin: 'mnm.gradle.ap-ide'
+
+dependencies {
+    factory "org.projectlombok:lombok:$lombokVersion"
+}
+
+allprojects {
+
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "net.ltgt.apt"
+
+    findMainClass.enabled = false
+    bootRepackage.enabled = false
+    bootRun.enabled = false
+
+    jar.enabled = false
+
+    repositories {
+        mavenCentral()
+    }
+
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Brixton.SR5"
+        }
+    }
+
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    jar.enabled = true
+
+
+    dependencies {
+        apt "org.projectlombok:lombok:$lombokVersion"
+
+        compile "org.projectlombok:lombok:${lombokVersion}"
+
+        compile group: 'io.github.benas', name: 'random-beans', version: '3.5.0'
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+    }
+
+    clean.doLast {
+        file(new File(projectDir, "/src/generated")).deleteDir()
+    }
+
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$GradleVersion-all.zip"
+}
+
+
+build.dependsOn ideaApt

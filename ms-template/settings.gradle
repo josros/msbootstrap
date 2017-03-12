@@ -1,0 +1,6 @@
+rootProject.name = '@msname@'
+include 'api'
+include 'core'
+
+project(':api').projectDir = "$rootDir/root/api" as File
+project(':core').projectDir = "$rootDir/root/core" as File

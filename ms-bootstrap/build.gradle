@@ -1,0 +1,42 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+//gradle -Pmsname=msname -Pproductname=pname create
+task create(type: Copy) {
+    ext.renameFolder = { src, trg ->
+        File folder = file(src)
+        folder.renameTo(file(trg))
+    }
+
+    println "msname: ${msname}"
+    println "productname: ${productname}"
+
+    def serviceFolder = new File("../${msname}")
+    def sourceFolder = new File("../ms-template")
+
+    doFirst {
+        org.apache.tools.ant.DirectoryScanner.removeDefaultExclude("**/.gitignore")
+    }
+    filter ReplaceTokens, tokens: [
+            'productname': productname,
+            'msname'     : msname
+    ]
+    from sourceFolder
+    into serviceFolder
+
+    doLast {
+        def pre =  "../${msname}/root/"
+        def post = "src/main/java/de/jro/"
+        def pathApi = pre + "api/" + post
+        def pathCore = pre + "core/" + post
+
+        renameFolder(pathApi + "@productname@", pathApi + "${productname}")
+        renameFolder(pathCore + "@productname@", pathCore + "${productname}")
+
+        println 'renamed product folders'
+
+        renameFolder(pathApi + "${productname}/@msname@", pathApi + "${productname}/${msname}")
+        renameFolder(pathCore + "${productname}/@msname@", pathCore + "${productname}/${msname}")
+
+        println 'renamed ms folders'
+    }
+}
