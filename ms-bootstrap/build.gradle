@@ -1,22 +1,36 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-//gradle -Pmsname=msname -Pproductname=pname create
+//gradle -Ptld=<used-tld> -Psubdomain=<your-subdomain> -Pscope=<your-scope> -Pproductname=<your-product-name> -Pmsname=<your-ms-name> -Ptemplate=<the-template-you-want-to-use> create
+//gradle -Ptld=io -Psubdomain=github -Pscope=josros -Pproductname=demo -Pmsname=show -Ptemplate=ms-template create
 task create(type: Copy) {
     ext.renameFolder = { src, trg ->
         File folder = file(src)
         folder.renameTo(file(trg))
     }
 
-    println "msname: ${msname}"
+    println "tld: ${tld}"
+    println "subdomain: ${subdomain}"
+    println "scope: ${scope}"
     println "productname: ${productname}"
+    println "msname: ${msname}"
+
+    println ""
+
+    println "template: ${template}"
+
+    println ""
+
 
     def serviceFolder = new File("../${msname}")
-    def sourceFolder = new File("../ms-template")
+    def sourceFolder = new File("../${template}")
 
     doFirst {
         org.apache.tools.ant.DirectoryScanner.removeDefaultExclude("**/.gitignore")
     }
     filter ReplaceTokens, tokens: [
+            'tld': tld,
+            'subdomain': subdomain,
+            'scope': scope,
             'productname': productname,
             'msname'     : msname
     ]
@@ -25,17 +39,32 @@ task create(type: Copy) {
 
     doLast {
         def pre =  "../${msname}/root/"
-        def post = "src/main/java/de/jro/"
+        def post = "src/main/java/"
         def pathApi = pre + "api/" + post
         def pathCore = pre + "core/" + post
 
-        renameFolder(pathApi + "@productname@", pathApi + "${productname}")
-        renameFolder(pathCore + "@productname@", pathCore + "${productname}")
+        renameFolder(pathApi + "@tld@", pathApi + "${tld}")
+        renameFolder(pathCore + "@tld@", pathCore + "${tld}")
+
+        println 'renamed tld folders'
+
+        renameFolder(pathApi + "${tld}/@subdomain@", pathApi + "${tld}/${subdomain}")
+        renameFolder(pathCore + "${tld}/@subdomain@", pathCore + "${tld}/${subdomain}")
+
+        println 'renamed subdomain folders'
+
+        renameFolder(pathApi + "${tld}/${subdomain}/@scope@", pathApi + "${tld}/${subdomain}/${scope}")
+        renameFolder(pathCore + "${tld}/${subdomain}/@scope@", pathCore + "${tld}/${subdomain}/${scope}")
+
+        println 'renamed scope folders'
+
+        renameFolder(pathApi + "${tld}/${subdomain}/${scope}/@productname@", pathApi + "${tld}/${subdomain}/${scope}/${productname}")
+        renameFolder(pathCore + "${tld}/${subdomain}/${scope}/@productname@", pathCore + "${tld}/${subdomain}/${scope}/${productname}")
 
         println 'renamed product folders'
 
-        renameFolder(pathApi + "${productname}/@msname@", pathApi + "${productname}/${msname}")
-        renameFolder(pathCore + "${productname}/@msname@", pathCore + "${productname}/${msname}")
+        renameFolder(pathApi + "${tld}/${subdomain}/${scope}/${productname}/@msname@", pathApi + "${tld}/${subdomain}/${scope}/${productname}/${msname}")
+        renameFolder(pathCore + "${tld}/${subdomain}/${scope}/${productname}/@msname@", pathCore + "${tld}/${subdomain}/${scope}/${productname}/${msname}")
 
         println 'renamed ms folders'
     }

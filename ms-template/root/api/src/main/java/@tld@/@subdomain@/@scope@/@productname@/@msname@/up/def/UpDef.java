@@ -1,4 +1,4 @@
-package de.jro.@productname@.@msname@.up.def;
+package @tld@.@subdomain@.@scope@.@productname@.@msname@.up.def;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

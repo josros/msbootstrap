@@ -1,6 +1,6 @@
-package de.jro.@productname@.@msname@.up.rest;
+package @tld@.@subdomain@.@scope@.@productname@.@msname@.up.rest;
 
-import de.jro.@productname@.@msname@.up.def.UpDef;
+import @tld@.@subdomain@.@scope@.@productname@.@msname@.up.def.UpDef;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/public/up")
+@RequestMapping("/@scope@/@productname@-api/v1/up")
 public class UpRC implements UpDef {
 
     @Override

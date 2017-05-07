@@ -17,6 +17,9 @@ At the moment gradle tasks are provided for:
 #### Microservice creation based on template
 
 1. Open a shell in the ```./ms-bootstrap``` directory
-1. Execute ```gradle -Pmsname=<your-ms-name> -Pproductname=<your-product-name> create```
+1. Execute ```gradle -Ptld=<used-tld> -Psubdomain=<your-subdomain> -Pscope=<your-scope> -Pproductname=<your-product-name> -Pmsname=<your-ms-name> -Ptemplate=<the-template-you-want-to-use> create```
 
 Subsequently it exists a new microservice here: ```./<your-ms-name>```
+
+The service created will use the following package structure:
+@tld@.@subdomain@.@scope@.@productname@.@msname@
